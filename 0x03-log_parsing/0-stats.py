@@ -4,6 +4,7 @@ Script to read stdin line by line and compute metrics.
 """
 import sys
 
+
 def printsts(dic, size):
     """ Prints information """
     print("File size: {:d}".format(size))
