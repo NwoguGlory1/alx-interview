@@ -3,54 +3,42 @@
 Script to read stdin line by line and compute metrics.
 """
 import sys
-import signal
 
-total_file_size = 0
-status_count = {}
-status_codes = {200, 301, 400, 401, 403, 404, 405, 500}
-line_count = 0
+def printsts(dic, size):
+    """ Prints information """
+    print("File size: {:d}".format(size))
+    for i in sorted(dic.keys()):
+        if dic[i] != 0:
+            print("{}: {:d}".format(i, dic[i]))
 
-def print_statistics():
-    """Prints statistics when a keyboard interruption occurs or every 10 lines."""
-    print("File size: {}".format(total_file_size))
-    for code in sorted(status_count.keys()):
-        if status_count[code] > 0:
-            print("{}: {}".format(code, status_count[code]))
 
-def signal_handler(sig, frame):
-    """Handles the keyboard interruption (CTRL + C)."""
-    print_statistics()
-    sys.exit(0)
+sts = {"200": 0, "301": 0, "400": 0, "401": 0, "403": 0,
+       "404": 0, "405": 0, "500": 0}
 
-signal.signal(signal.SIGINT, signal_handler)
+count = 0
+size = 0
 
 try:
     for line in sys.stdin:
-        line_count += 1
-        
-        parts = line.split()
-        if len(parts) < 7:
-            continue
-        
-        ip, dash, date, request, protocol, status_code, file_size = parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]
-        
+        if count != 0 and count % 10 == 0:
+            printsts(sts, size)
+
+        stlist = line.split()
+        count += 1
+
         try:
-            status_code = int(status_code)
-            if status_code in status_codes:
-                file_size = int(file_size)
-                total_file_size += file_size
-                if status_code in status_count:
-                    status_count[status_code] += 1
-                else:
-                    status_count[status_code] = 1
-        except ValueError:
-            continue
-        
-        if line_count % 10 == 0:
-            print_statistics()
+            size += int(stlist[-1])
+        except:
+            pass
 
-except Exception as e:
-    print("An error occurred: {}".format(e), file=sys.stderr)
+        try:
+            if stlist[-2] in sts:
+                sts[stlist[-2]] += 1
+        except:
+            pass
+    printsts(sts, size)
 
-finally:
-    print_statistics()
+
+except KeyboardInterrupt:
+    printsts(sts, size)
+    raise
