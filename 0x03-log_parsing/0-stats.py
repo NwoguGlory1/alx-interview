@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-"""
-Script to read stdin line by line and compute metrics.
-"""
+
+""" script that reads stdin line by line and computes metrics """
+
 import sys
 
 
