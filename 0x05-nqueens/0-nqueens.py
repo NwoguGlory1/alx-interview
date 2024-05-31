@@ -3,7 +3,6 @@
 import sys
 
 
-
 class NQueen:
     """ Class for solving N Queen Problem """
 
@@ -20,7 +19,7 @@ class NQueen:
         """
         for j in range(1, k):
             if self.x[j] == i or \
-                abs(self.x[j] - i) == abs(j - k):
+                    abs(self.x[j] - i) == abs(j - k):
                 return 0
         return 1
 
@@ -68,4 +67,3 @@ res = queen.nQueen(1)
 
 for i in res:
     print(i)
-
